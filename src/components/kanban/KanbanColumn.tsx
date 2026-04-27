@@ -152,6 +152,8 @@ export function KanbanColumn({
                   project={projectsById?.[task.project_id]}
                   showProject={showProjectTag}
                   invalidateKeys={invalidateKeys}
+                  onOpen={onOpenTask}
+                  checklistCountsKey={checklistCountsKey}
                 />
               ))}
             </div>
