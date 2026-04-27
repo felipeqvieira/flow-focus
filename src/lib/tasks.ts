@@ -2,6 +2,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 export type TaskStatus = "backlog" | "todo" | "doing" | "review" | "done";
+export type TaskPriority = "low" | "medium" | "high" | "urgent";
 
 export const TASK_STATUSES: TaskStatus[] = ["backlog", "todo", "doing", "review", "done"];
 
@@ -13,7 +14,36 @@ export const STATUS_LABELS: Record<TaskStatus, string> = {
   done: "Concluído",
 };
 
-// Subtle column accent colors (border + header tint). Uses semantic-ish hues.
+export const PRIORITY_LABELS: Record<TaskPriority, string> = {
+  low: "Baixa",
+  medium: "Média",
+  high: "Alta",
+  urgent: "Urgente",
+};
+
+export const PRIORITY_STYLES: Record<TaskPriority, { dot: string; badge: string; label: string }> = {
+  low: {
+    dot: "bg-slate-400",
+    badge: "bg-slate-400/10 text-slate-300 border-slate-400/30",
+    label: "Baixa",
+  },
+  medium: {
+    dot: "bg-blue-400",
+    badge: "bg-blue-400/10 text-blue-300 border-blue-400/30",
+    label: "Média",
+  },
+  high: {
+    dot: "bg-orange-400",
+    badge: "bg-orange-400/10 text-orange-300 border-orange-400/30",
+    label: "Alta",
+  },
+  urgent: {
+    dot: "bg-red-500",
+    badge: "bg-red-500/15 text-red-300 border-red-500/40",
+    label: "Urgente",
+  },
+};
+
 export const STATUS_COLORS: Record<
   TaskStatus,
   { dot: string; border: string; headerBg: string; headerText: string }
@@ -57,10 +87,21 @@ export type Task = {
   title: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority;
   position: number;
   due_date: string | null;
   due_time: string | null;
   archived_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ChecklistItem = {
+  id: string;
+  task_id: string;
+  title: string;
+  is_done: boolean;
+  position: number;
   created_at: string;
   updated_at: string;
 };
@@ -118,6 +159,22 @@ export async function updateTaskPosition(input: {
   if (error) throw error;
 }
 
+export type TaskUpdateInput = {
+  id: string;
+  title?: string;
+  description?: string | null;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  due_date?: string | null;
+  due_time?: string | null;
+};
+
+export async function updateTask(input: TaskUpdateInput): Promise<void> {
+  const { id, ...patch } = input;
+  const { error } = await supabase.from("tasks").update(patch).eq("id", id);
+  if (error) throw error;
+}
+
 export async function archiveTask(id: string): Promise<void> {
   const { error } = await supabase
     .from("tasks")
@@ -139,6 +196,70 @@ export async function deleteTask(id: string): Promise<void> {
   if (error) throw error;
 }
 
+// ===== Checklist =====
+export async function fetchChecklistByTask(taskId: string): Promise<ChecklistItem[]> {
+  const { data, error } = await supabase
+    .from("task_checklist_items")
+    .select("*")
+    .eq("task_id", taskId)
+    .order("position", { ascending: true });
+  if (error) throw error;
+  return data as ChecklistItem[];
+}
+
+export async function createChecklistItem(input: {
+  taskId: string;
+  title: string;
+  position: number;
+}): Promise<ChecklistItem> {
+  const { data, error } = await supabase
+    .from("task_checklist_items")
+    .insert({
+      task_id: input.taskId,
+      title: input.title,
+      position: input.position,
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return data as ChecklistItem;
+}
+
+export async function updateChecklistItem(input: {
+  id: string;
+  title?: string;
+  is_done?: boolean;
+}): Promise<void> {
+  const { id, ...patch } = input;
+  const { error } = await supabase.from("task_checklist_items").update(patch).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteChecklistItem(id: string): Promise<void> {
+  const { error } = await supabase.from("task_checklist_items").delete().eq("id", id);
+  if (error) throw error;
+}
+
+// Lightweight: get checklist counts for many tasks
+export async function fetchChecklistCounts(
+  taskIds: string[],
+): Promise<Record<string, { total: number; done: number }>> {
+  if (taskIds.length === 0) return {};
+  const { data, error } = await supabase
+    .from("task_checklist_items")
+    .select("task_id, is_done")
+    .in("task_id", taskIds);
+  if (error) throw error;
+  const result: Record<string, { total: number; done: number }> = {};
+  (data ?? []).forEach((row: { task_id: string; is_done: boolean }) => {
+    const r = result[row.task_id] ?? { total: 0, done: 0 };
+    r.total += 1;
+    if (row.is_done) r.done += 1;
+    result[row.task_id] = r;
+  });
+  return result;
+}
+
 export const projectTasksQueryOptions = (projectId: string) =>
   queryOptions({
     queryKey: ["tasks", "project", projectId],
@@ -149,4 +270,17 @@ export const allTasksQueryOptions = () =>
   queryOptions({
     queryKey: ["tasks", "all"],
     queryFn: fetchAllTasks,
+  });
+
+export const taskChecklistQueryOptions = (taskId: string) =>
+  queryOptions({
+    queryKey: ["checklist", taskId],
+    queryFn: () => fetchChecklistByTask(taskId),
+  });
+
+export const checklistCountsQueryOptions = (taskIds: string[]) =>
+  queryOptions({
+    queryKey: ["checklist", "counts", [...taskIds].sort().join(",")],
+    queryFn: () => fetchChecklistCounts(taskIds),
+    enabled: taskIds.length > 0,
   });
