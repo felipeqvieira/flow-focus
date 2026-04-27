@@ -121,6 +121,44 @@ export type Database = {
         }
         Relationships: []
       }
+      task_checklist_items: {
+        Row: {
+          created_at: string
+          id: string
+          is_done: boolean
+          position: number
+          task_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_done?: boolean
+          position?: number
+          task_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_done?: boolean
+          position?: number
+          task_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_checklist_items_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tasks: {
         Row: {
           archived_at: string | null
@@ -131,6 +169,7 @@ export type Database = {
           due_time: string | null
           id: string
           position: number
+          priority: Database["public"]["Enums"]["task_priority"]
           project_id: string
           status: Database["public"]["Enums"]["task_status"]
           title: string
@@ -145,6 +184,7 @@ export type Database = {
           due_time?: string | null
           id?: string
           position?: number
+          priority?: Database["public"]["Enums"]["task_priority"]
           project_id: string
           status?: Database["public"]["Enums"]["task_status"]
           title: string
@@ -159,6 +199,7 @@ export type Database = {
           due_time?: string | null
           id?: string
           position?: number
+          priority?: Database["public"]["Enums"]["task_priority"]
           project_id?: string
           status?: Database["public"]["Enums"]["task_status"]
           title?: string
@@ -187,6 +228,7 @@ export type Database = {
     }
     Enums: {
       project_role: "owner" | "editor" | "viewer"
+      task_priority: "low" | "medium" | "high" | "urgent"
       task_status: "backlog" | "todo" | "doing" | "review" | "done"
     }
     CompositeTypes: {
@@ -316,6 +358,7 @@ export const Constants = {
   public: {
     Enums: {
       project_role: ["owner", "editor", "viewer"],
+      task_priority: ["low", "medium", "high", "urgent"],
       task_status: ["backlog", "todo", "doing", "review", "done"],
     },
   },
