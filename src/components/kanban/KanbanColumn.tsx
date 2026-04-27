@@ -13,7 +13,9 @@ type KanbanColumnProps = {
   projectsById?: Record<string, Project>;
   showProjectTag?: boolean;
   onAddTask?: (title: string, status: TaskStatus) => void;
+  onOpenTask?: (task: Task) => void;
   invalidateKeys?: (string | string[])[][];
+  checklistCountsKey?: (string | string[])[];
 };
 
 export function KanbanColumn({
@@ -24,7 +26,9 @@ export function KanbanColumn({
   projectsById,
   showProjectTag,
   onAddTask,
+  onOpenTask,
   invalidateKeys,
+  checklistCountsKey,
 }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: status, data: { status } });
   const [adding, setAdding] = useState(false);
