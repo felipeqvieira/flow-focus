@@ -4,8 +4,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    redirect: typeof search.redirect === "string" ? search.redirect : "/desk",
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
   }),
   head: () => ({
     meta: [
@@ -20,7 +20,8 @@ type Mode = "signin" | "signup";
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { redirect } = Route.useSearch();
+  const search = Route.useSearch();
+  const redirect = search.redirect ?? "/desk";
   const { signInWithPassword, signUpWithPassword, signInWithGoogle } = useAuth();
 
   const [mode, setMode] = useState<Mode>("signin");

@@ -123,6 +123,7 @@ export type Database = {
       }
       tasks: {
         Row: {
+          archived_at: string | null
           created_at: string
           created_by: string
           description: string | null
@@ -136,6 +137,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          archived_at?: string | null
           created_at?: string
           created_by: string
           description?: string | null
@@ -149,6 +151,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          archived_at?: string | null
           created_at?: string
           created_by?: string
           description?: string | null
@@ -176,6 +179,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      auto_archive_done_tasks: { Args: never; Returns: number }
       user_has_project_access: {
         Args: { _project_id: string; _user_id: string }
         Returns: boolean
