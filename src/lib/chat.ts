@@ -80,11 +80,15 @@ export async function updateMessageStatus(
   status: ChatMessage["status"],
   tool_result?: unknown,
 ): Promise<void> {
-  const patch: Record<string, unknown> = { status };
-  if (tool_result !== undefined) patch.tool_result = tool_result;
+  const patch: { status: ChatMessage["status"]; tool_result?: never } = {
+    status,
+  };
+  if (tool_result !== undefined) {
+    (patch as { tool_result: unknown }).tool_result = tool_result;
+  }
   const { error } = await supabase
     .from("chat_messages")
-    .update(patch)
+    .update(patch as never)
     .eq("id", id);
   if (error) throw error;
 }
