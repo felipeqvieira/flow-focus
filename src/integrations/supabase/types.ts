@@ -16,24 +16,42 @@ export type Database = {
     Tables: {
       chat_messages: {
         Row: {
-          content: string
+          content: string | null
           created_at: string
           id: string
           role: string
+          status: string
+          tool_args: Json | null
+          tool_call_id: string | null
+          tool_calls: Json | null
+          tool_name: string | null
+          tool_result: Json | null
           user_id: string
         }
         Insert: {
-          content: string
+          content?: string | null
           created_at?: string
           id?: string
           role: string
+          status?: string
+          tool_args?: Json | null
+          tool_call_id?: string | null
+          tool_calls?: Json | null
+          tool_name?: string | null
+          tool_result?: Json | null
           user_id: string
         }
         Update: {
-          content?: string
+          content?: string | null
           created_at?: string
           id?: string
           role?: string
+          status?: string
+          tool_args?: Json | null
+          tool_call_id?: string | null
+          tool_calls?: Json | null
+          tool_name?: string | null
+          tool_result?: Json | null
           user_id?: string
         }
         Relationships: []
