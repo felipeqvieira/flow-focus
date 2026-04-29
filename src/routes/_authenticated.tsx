@@ -22,8 +22,8 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 const navItems = [
-  { to: "/desk", label: "Meu Desk", icon: Inbox },
-  { to: "/everything", label: "Tudo", icon: LayoutGrid },
+  { to: "/desk", label: "My Desk", icon: Inbox },
+  { to: "/everything", label: "Workplace", icon: LayoutGrid },
   { to: "/chat", label: "Chat IA", icon: Sparkles },
 ] as const;
 
