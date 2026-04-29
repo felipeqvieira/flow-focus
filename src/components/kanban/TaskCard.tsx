@@ -156,7 +156,12 @@ export function TaskCard({
       )}
     >
       {/* Top row: project tag + menu */}
-      <div className="mb-1.5 flex items-start justify-between gap-2">
+      <div
+        className={cn(
+          "flex items-start justify-between gap-2",
+          showProject && project ? "mb-1.5" : "",
+        )}
+      >
         <div className="flex min-w-0 flex-1 items-center gap-1.5">
           {showProject && project && (
             <>
@@ -171,7 +176,13 @@ export function TaskCard({
           )}
         </div>
 
-        <div data-no-open className="flex shrink-0 items-center gap-0.5">
+        <div
+          data-no-open
+          className={cn(
+            "flex shrink-0 items-center gap-0.5",
+            !(showProject && project) && "absolute right-2 top-2",
+          )}
+        >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
