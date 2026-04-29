@@ -172,16 +172,6 @@ export function TaskCard({
         </div>
 
         <div data-no-open className="flex shrink-0 items-center gap-0.5">
-          <span
-            className={cn(
-              "rounded border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider",
-              priorityStyle.badge,
-            )}
-            title={`Prioridade: ${priorityStyle.label}`}
-          >
-            {priorityStyle.label}
-          </span>
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
