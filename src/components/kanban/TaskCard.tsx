@@ -286,29 +286,37 @@ export function TaskCard({
         )}
       </div>
 
-      {/* Footer: date + checklist count */}
-      {(formattedDate || (c && c.total > 0)) && (
-        <div className="mt-2 flex items-center gap-3 pl-6 text-[11px] text-muted-foreground">
-          {formattedDate && (
-            <div className="flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
-              {formattedDate}
-              {task.due_time && <span>· {task.due_time.slice(0, 5)}</span>}
-            </div>
+      {/* Footer: priority + date + checklist count */}
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 pl-6 text-[11px] text-muted-foreground">
+        <span
+          data-no-open
+          className={cn(
+            "rounded border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider",
+            priorityStyle.badge,
           )}
-          {c && c.total > 0 && (
-            <div
-              className={cn(
-                "flex items-center gap-1",
-                c.done === c.total && "text-emerald-400",
-              )}
-            >
-              <ListChecks className="h-3 w-3" />
-              {c.done}/{c.total}
-            </div>
-          )}
-        </div>
-      )}
+          title={`Prioridade: ${priorityStyle.label}`}
+        >
+          {priorityStyle.label}
+        </span>
+        {formattedDate && (
+          <div className="flex items-center gap-1">
+            <Calendar className="h-3 w-3" />
+            {formattedDate}
+            {task.due_time && <span>· {task.due_time.slice(0, 5)}</span>}
+          </div>
+        )}
+        {c && c.total > 0 && (
+          <div
+            className={cn(
+              "flex items-center gap-1",
+              c.done === c.total && "text-emerald-400",
+            )}
+          >
+            <ListChecks className="h-3 w-3" />
+            {c.done}/{c.total}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
