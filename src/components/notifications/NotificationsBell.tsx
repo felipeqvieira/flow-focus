@@ -32,8 +32,10 @@ export function NotificationsBell() {
   // Realtime subscription
   useEffect(() => {
     if (!user) return;
-    const channel = supabase
-      .channel(`notifications:${user.id}`)
+    const channel = supabase.channel(
+      `notifications:${user.id}:${Math.random().toString(36).slice(2)}`,
+    );
+    channel
       .on(
         "postgres_changes",
         {
@@ -50,7 +52,7 @@ export function NotificationsBell() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, qc]);
+  }, [user?.id, qc]);
 
   const notifications = query.data ?? [];
   const unread = notifications.filter((n) => !n.read_at);
