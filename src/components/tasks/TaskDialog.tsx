@@ -66,8 +66,7 @@ import {
   type TaskPriority,
   type TaskStatus,
 } from "@/lib/tasks";
-import { REMINDER_OPTIONS, reminderLabel } from "@/lib/notifications";
-import { Badge } from "@/components/ui/badge";
+import { REMINDER_OPTIONS } from "@/lib/notifications";
 
 type Props = {
   task: Task | null;
