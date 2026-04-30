@@ -92,6 +92,8 @@ export type Task = {
   due_date: string | null;
   due_time: string | null;
   archived_at: string | null;
+  reminder_offsets: number[];
+  reminders_sent: Record<string, string>;
   created_at: string;
   updated_at: string;
 };
@@ -167,6 +169,7 @@ export type TaskUpdateInput = {
   priority?: TaskPriority;
   due_date?: string | null;
   due_time?: string | null;
+  reminder_offsets?: number[];
 };
 
 export async function updateTask(input: TaskUpdateInput): Promise<void> {

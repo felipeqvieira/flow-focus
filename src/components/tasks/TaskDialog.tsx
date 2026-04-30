@@ -9,6 +9,7 @@ import {
   X,
   Archive,
   ArchiveRestore,
+  Bell,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
@@ -65,6 +66,7 @@ import {
   type TaskPriority,
   type TaskStatus,
 } from "@/lib/tasks";
+import { REMINDER_OPTIONS } from "@/lib/notifications";
 
 type Props = {
   task: Task | null;
@@ -83,6 +85,7 @@ export function TaskDialog({ task, open, onOpenChange, invalidateKeys }: Props) 
   const [priority, setPriority] = useState<TaskPriority>("medium");
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
   const [dueTime, setDueTime] = useState<string>("");
+  const [reminders, setReminders] = useState<number[]>([]);
   const [newItem, setNewItem] = useState("");
 
   // Sync local state when task changes / dialog opens
@@ -95,6 +98,7 @@ export function TaskDialog({ task, open, onOpenChange, invalidateKeys }: Props) 
       setPriority(task.priority);
       setDueDate(task.due_date ? new Date(task.due_date + "T00:00:00") : undefined);
       setDueTime(task.due_time ? task.due_time.slice(0, 5) : "");
+      setReminders(task.reminder_offsets ?? []);
       setNewItem("");
     }
   }, [task, open]);
@@ -334,6 +338,41 @@ export function TaskDialog({ task, open, onOpenChange, invalidateKeys }: Props) 
             </div>
           </div>
         </div>
+
+        {/* Reminders */}
+        {dueDate && (
+          <div className="space-y-1.5">
+            <label className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <Bell className="h-3 w-3" /> Lembretes
+            </label>
+            <div className="flex flex-wrap gap-1.5">
+              {REMINDER_OPTIONS.map((opt) => {
+                const active = reminders.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => {
+                      const next = active
+                        ? reminders.filter((r) => r !== opt.value)
+                        : [...reminders, opt.value].sort((a, b) => a - b);
+                      setReminders(next);
+                      updateMutation.mutate({ id: task.id, reminder_offsets: next });
+                    }}
+                    className={cn(
+                      "rounded-full border px-2.5 py-0.5 text-xs transition-colors",
+                      active
+                        ? "border-primary bg-primary/15 text-primary"
+                        : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground",
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Description */}
         <div className="space-y-1.5">
