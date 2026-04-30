@@ -56,6 +56,42 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          metadata: Json | null
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          metadata?: Json | null
+          read_at?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          metadata?: Json | null
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -242,6 +278,8 @@ export type Database = {
           position: number
           priority: Database["public"]["Enums"]["task_priority"]
           project_id: string
+          reminder_offsets: number[]
+          reminders_sent: Json
           status: Database["public"]["Enums"]["task_status"]
           title: string
           updated_at: string
@@ -257,6 +295,8 @@ export type Database = {
           position?: number
           priority?: Database["public"]["Enums"]["task_priority"]
           project_id: string
+          reminder_offsets?: number[]
+          reminders_sent?: Json
           status?: Database["public"]["Enums"]["task_status"]
           title: string
           updated_at?: string
@@ -272,6 +312,8 @@ export type Database = {
           position?: number
           priority?: Database["public"]["Enums"]["task_priority"]
           project_id?: string
+          reminder_offsets?: number[]
+          reminders_sent?: Json
           status?: Database["public"]["Enums"]["task_status"]
           title?: string
           updated_at?: string
@@ -285,6 +327,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_preferences: {
+        Row: {
+          created_at: string
+          daily_digest_enabled: boolean
+          daily_digest_hour: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          daily_digest_enabled?: boolean
+          daily_digest_hour?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          daily_digest_enabled?: boolean
+          daily_digest_hour?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {
@@ -306,6 +372,8 @@ export type Database = {
           status: string
         }[]
       }
+      process_daily_digest: { Args: never; Returns: number }
+      process_task_reminders: { Args: never; Returns: number }
       user_has_project_access: {
         Args: { _project_id: string; _user_id: string }
         Returns: boolean
