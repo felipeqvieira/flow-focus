@@ -9,6 +9,7 @@ import {
   X,
   Archive,
   ArchiveRestore,
+  Bell,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
@@ -65,6 +66,8 @@ import {
   type TaskPriority,
   type TaskStatus,
 } from "@/lib/tasks";
+import { REMINDER_OPTIONS, reminderLabel } from "@/lib/notifications";
+import { Badge } from "@/components/ui/badge";
 
 type Props = {
   task: Task | null;
@@ -83,6 +86,7 @@ export function TaskDialog({ task, open, onOpenChange, invalidateKeys }: Props) 
   const [priority, setPriority] = useState<TaskPriority>("medium");
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
   const [dueTime, setDueTime] = useState<string>("");
+  const [reminders, setReminders] = useState<number[]>([]);
   const [newItem, setNewItem] = useState("");
 
   // Sync local state when task changes / dialog opens
@@ -95,6 +99,7 @@ export function TaskDialog({ task, open, onOpenChange, invalidateKeys }: Props) 
       setPriority(task.priority);
       setDueDate(task.due_date ? new Date(task.due_date + "T00:00:00") : undefined);
       setDueTime(task.due_time ? task.due_time.slice(0, 5) : "");
+      setReminders(task.reminder_offsets ?? []);
       setNewItem("");
     }
   }, [task, open]);
