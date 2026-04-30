@@ -340,6 +340,41 @@ export function TaskDialog({ task, open, onOpenChange, invalidateKeys }: Props) 
           </div>
         </div>
 
+        {/* Reminders */}
+        {dueDate && (
+          <div className="space-y-1.5">
+            <label className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <Bell className="h-3 w-3" /> Lembretes
+            </label>
+            <div className="flex flex-wrap gap-1.5">
+              {REMINDER_OPTIONS.map((opt) => {
+                const active = reminders.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => {
+                      const next = active
+                        ? reminders.filter((r) => r !== opt.value)
+                        : [...reminders, opt.value].sort((a, b) => a - b);
+                      setReminders(next);
+                      updateMutation.mutate({ id: task.id, reminder_offsets: next });
+                    }}
+                    className={cn(
+                      "rounded-full border px-2.5 py-0.5 text-xs transition-colors",
+                      active
+                        ? "border-primary bg-primary/15 text-primary"
+                        : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground",
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Description */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
