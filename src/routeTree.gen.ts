@@ -20,6 +20,8 @@ import { Route as AuthenticatedDeskRouteImport } from './routes/_authenticated/d
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
 import { Route as AuthenticatedProjectsIdRouteImport } from './routes/_authenticated/projects.$id'
 import { Route as ApiPublicHooksNotificationsRouteImport } from './routes/api/public/hooks/notifications'
+import { Route as ApiOauthGoogleStartRouteImport } from './routes/api/oauth/google/start'
+import { Route as ApiOauthGoogleCallbackRouteImport } from './routes/api/oauth/google/callback'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -76,6 +78,16 @@ const ApiPublicHooksNotificationsRoute =
     path: '/api/public/hooks/notifications',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiOauthGoogleStartRoute = ApiOauthGoogleStartRouteImport.update({
+  id: '/api/oauth/google/start',
+  path: '/api/oauth/google/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOauthGoogleCallbackRoute = ApiOauthGoogleCallbackRouteImport.update({
+  id: '/api/oauth/google/callback',
+  path: '/api/oauth/google/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -87,6 +99,8 @@ export interface FileRoutesByFullPath {
   '/everything': typeof AuthenticatedEverythingRoute
   '/invite/$token': typeof InviteTokenRoute
   '/projects/$id': typeof AuthenticatedProjectsIdRoute
+  '/api/oauth/google/callback': typeof ApiOauthGoogleCallbackRoute
+  '/api/oauth/google/start': typeof ApiOauthGoogleStartRoute
   '/api/public/hooks/notifications': typeof ApiPublicHooksNotificationsRoute
 }
 export interface FileRoutesByTo {
@@ -99,6 +113,8 @@ export interface FileRoutesByTo {
   '/everything': typeof AuthenticatedEverythingRoute
   '/invite/$token': typeof InviteTokenRoute
   '/projects/$id': typeof AuthenticatedProjectsIdRoute
+  '/api/oauth/google/callback': typeof ApiOauthGoogleCallbackRoute
+  '/api/oauth/google/start': typeof ApiOauthGoogleStartRoute
   '/api/public/hooks/notifications': typeof ApiPublicHooksNotificationsRoute
 }
 export interface FileRoutesById {
@@ -113,6 +129,8 @@ export interface FileRoutesById {
   '/_authenticated/everything': typeof AuthenticatedEverythingRoute
   '/invite/$token': typeof InviteTokenRoute
   '/_authenticated/projects/$id': typeof AuthenticatedProjectsIdRoute
+  '/api/oauth/google/callback': typeof ApiOauthGoogleCallbackRoute
+  '/api/oauth/google/start': typeof ApiOauthGoogleStartRoute
   '/api/public/hooks/notifications': typeof ApiPublicHooksNotificationsRoute
 }
 export interface FileRouteTypes {
@@ -127,6 +145,8 @@ export interface FileRouteTypes {
     | '/everything'
     | '/invite/$token'
     | '/projects/$id'
+    | '/api/oauth/google/callback'
+    | '/api/oauth/google/start'
     | '/api/public/hooks/notifications'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -139,6 +159,8 @@ export interface FileRouteTypes {
     | '/everything'
     | '/invite/$token'
     | '/projects/$id'
+    | '/api/oauth/google/callback'
+    | '/api/oauth/google/start'
     | '/api/public/hooks/notifications'
   id:
     | '__root__'
@@ -152,6 +174,8 @@ export interface FileRouteTypes {
     | '/_authenticated/everything'
     | '/invite/$token'
     | '/_authenticated/projects/$id'
+    | '/api/oauth/google/callback'
+    | '/api/oauth/google/start'
     | '/api/public/hooks/notifications'
   fileRoutesById: FileRoutesById
 }
@@ -162,6 +186,8 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   InviteTokenRoute: typeof InviteTokenRoute
+  ApiOauthGoogleCallbackRoute: typeof ApiOauthGoogleCallbackRoute
+  ApiOauthGoogleStartRoute: typeof ApiOauthGoogleStartRoute
   ApiPublicHooksNotificationsRoute: typeof ApiPublicHooksNotificationsRoute
 }
 
@@ -244,6 +270,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksNotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/oauth/google/start': {
+      id: '/api/oauth/google/start'
+      path: '/api/oauth/google/start'
+      fullPath: '/api/oauth/google/start'
+      preLoaderRoute: typeof ApiOauthGoogleStartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/oauth/google/callback': {
+      id: '/api/oauth/google/callback'
+      path: '/api/oauth/google/callback'
+      fullPath: '/api/oauth/google/callback'
+      preLoaderRoute: typeof ApiOauthGoogleCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -272,6 +312,8 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   InviteTokenRoute: InviteTokenRoute,
+  ApiOauthGoogleCallbackRoute: ApiOauthGoogleCallbackRoute,
+  ApiOauthGoogleStartRoute: ApiOauthGoogleStartRoute,
   ApiPublicHooksNotificationsRoute: ApiPublicHooksNotificationsRoute,
 }
 export const routeTree = rootRouteImport
