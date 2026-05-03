@@ -7,9 +7,21 @@ export type Project = {
   color: string;
   icon: string | null;
   owner_id: string;
+  google_calendar_sync_enabled: boolean;
   created_at: string;
   updated_at: string;
 };
+
+export async function updateProjectSync(
+  id: string,
+  enabled: boolean,
+): Promise<void> {
+  const { error } = await supabase
+    .from("projects")
+    .update({ google_calendar_sync_enabled: enabled })
+    .eq("id", id);
+  if (error) throw error;
+}
 
 export const PROJECT_COLORS = [
   "#ef4444", // red

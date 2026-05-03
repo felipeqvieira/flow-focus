@@ -67,6 +67,7 @@ import {
   type TaskStatus,
 } from "@/lib/tasks";
 import { REMINDER_OPTIONS } from "@/lib/notifications";
+import { triggerGoogleSync } from "@/lib/googleSync";
 
 type Props = {
   task: Task | null;
@@ -119,13 +120,17 @@ export function TaskDialog({ task, open, onOpenChange, invalidateKeys }: Props) 
 
   const updateMutation = useMutation({
     mutationFn: updateTask,
-    onSuccess: invalidateAll,
+    onSuccess: (_data, vars) => {
+      invalidateAll();
+      triggerGoogleSync(vars.id, "upsert");
+    },
     onError: () => toast.error("Erro ao salvar"),
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteTask,
-    onSuccess: () => {
+    onSuccess: (_d, id) => {
+      triggerGoogleSync(id, "delete");
       invalidateAll();
       toast.success("Tarefa excluída");
       onOpenChange(false);
@@ -137,6 +142,7 @@ export function TaskDialog({ task, open, onOpenChange, invalidateKeys }: Props) 
     mutationFn: () =>
       task && task.archived_at ? unarchiveTask(task.id) : archiveTask(task!.id),
     onSuccess: () => {
+      if (task) triggerGoogleSync(task.id, "upsert");
       invalidateAll();
       toast.success(task?.archived_at ? "Restaurada" : "Arquivada");
     },
