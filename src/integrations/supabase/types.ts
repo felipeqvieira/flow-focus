@@ -56,6 +56,42 @@ export type Database = {
         }
         Relationships: []
       }
+      google_calendar_connections: {
+        Row: {
+          access_token: string
+          created_at: string
+          expires_at: string
+          google_email: string | null
+          id: string
+          refresh_token: string
+          scope: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          expires_at: string
+          google_email?: string | null
+          id?: string
+          refresh_token: string
+          scope?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          expires_at?: string
+          google_email?: string | null
+          id?: string
+          refresh_token?: string
+          scope?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
@@ -202,6 +238,7 @@ export type Database = {
         Row: {
           color: string
           created_at: string
+          google_calendar_sync_enabled: boolean
           icon: string | null
           id: string
           name: string
@@ -211,6 +248,7 @@ export type Database = {
         Insert: {
           color?: string
           created_at?: string
+          google_calendar_sync_enabled?: boolean
           icon?: string | null
           id?: string
           name: string
@@ -220,6 +258,7 @@ export type Database = {
         Update: {
           color?: string
           created_at?: string
+          google_calendar_sync_enabled?: boolean
           icon?: string | null
           id?: string
           name?: string
@@ -274,6 +313,8 @@ export type Database = {
           description: string | null
           due_date: string | null
           due_time: string | null
+          google_event_id: string | null
+          google_event_synced_at: string | null
           id: string
           position: number
           priority: Database["public"]["Enums"]["task_priority"]
@@ -291,6 +332,8 @@ export type Database = {
           description?: string | null
           due_date?: string | null
           due_time?: string | null
+          google_event_id?: string | null
+          google_event_synced_at?: string | null
           id?: string
           position?: number
           priority?: Database["public"]["Enums"]["task_priority"]
@@ -308,6 +351,8 @@ export type Database = {
           description?: string | null
           due_date?: string | null
           due_time?: string | null
+          google_event_id?: string | null
+          google_event_synced_at?: string | null
           id?: string
           position?: number
           priority?: Database["public"]["Enums"]["task_priority"]
