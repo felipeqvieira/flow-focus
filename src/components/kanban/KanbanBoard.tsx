@@ -15,6 +15,7 @@ import {
   type TaskStatus,
 } from "@/lib/tasks";
 import type { Project } from "@/lib/projects";
+import { triggerGoogleSync } from "@/lib/googleSync";
 
 type KanbanBoardProps = {
   tasks: Task[];
@@ -88,6 +89,9 @@ export function KanbanBoard({
       ctx?.snapshots.forEach(([key, snap]) => qc.setQueryData(key, snap));
       toast.error("Erro ao mover tarefa");
     },
+    onSuccess: (_d, vars) => {
+      triggerGoogleSync(vars.id, "upsert");
+    },
     onSettled: () => {
       invalidateKeys.forEach((k) => qc.invalidateQueries({ queryKey: k }));
     },
@@ -95,7 +99,8 @@ export function KanbanBoard({
 
   const createMutation = useMutation({
     mutationFn: createTask,
-    onSuccess: () => {
+    onSuccess: (task) => {
+      triggerGoogleSync(task.id, "upsert");
       invalidateKeys.forEach((k) => qc.invalidateQueries({ queryKey: k }));
     },
     onError: () => toast.error("Erro ao criar tarefa"),
