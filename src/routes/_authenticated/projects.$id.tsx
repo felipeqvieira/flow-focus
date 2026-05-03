@@ -1,13 +1,30 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { projectQueryOptions } from "@/lib/projects";
+import { toast } from "sonner";
+import { projectQueryOptions, updateProjectSync } from "@/lib/projects";
 import { projectTasksQueryOptions } from "@/lib/tasks";
 import { KanbanBoard } from "@/components/kanban/KanbanBoard";
 import { useAuth } from "@/hooks/use-auth";
-import { ArrowLeft, UserPlus } from "lucide-react";
+import { ArrowLeft, Calendar, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { InviteMembersDialog } from "@/components/projects/InviteMembersDialog";
+import { supabase } from "@/integrations/supabase/client";
+
+async function fetchOwnConnection(userId: string) {
+  const { data } = await supabase
+    .from("google_calendar_connections")
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+  return !!data;
+}
 
 export const Route = createFileRoute("/_authenticated/projects/$id")({
   loader: ({ params, context: { queryClient } }) => {
@@ -20,12 +37,29 @@ export const Route = createFileRoute("/_authenticated/projects/$id")({
 function ProjectPage() {
   const { id } = Route.useParams();
   const { user } = useAuth();
+  const qc = useQueryClient();
   const projectQuery = useQuery(projectQueryOptions(id));
   const tasksQuery = useQuery(projectTasksQueryOptions(id));
   const [inviteOpen, setInviteOpen] = useState(false);
 
   const project = projectQuery.data;
   const isOwner = !!user && !!project && project.owner_id === user.id;
+
+  const connQuery = useQuery({
+    queryKey: ["google-conn", user?.id],
+    queryFn: () => fetchOwnConnection(user!.id),
+    enabled: !!user,
+  });
+
+  const syncMutation = useMutation({
+    mutationFn: (enabled: boolean) => updateProjectSync(id, enabled),
+    onSuccess: (_d, enabled) => {
+      qc.invalidateQueries({ queryKey: ["projects", id] });
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      toast.success(enabled ? "Sincronização ativada" : "Sincronização desativada");
+    },
+    onError: () => toast.error("Erro ao atualizar sincronização"),
+  });
 
   return (
     <div className="flex h-full flex-col">
@@ -45,7 +79,46 @@ function ProjectPage() {
         <h1 className="text-lg font-semibold tracking-tight">
           {project?.name ?? "Carregando..."}
         </h1>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
+          {isOwner && project && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-2"
+                  title="Configurações de sincronização"
+                >
+                  <Calendar
+                    className={`h-4 w-4 ${project.google_calendar_sync_enabled ? "text-emerald-400" : ""}`}
+                  />
+                  <span className="hidden sm:inline">Calendar</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-72 space-y-3">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">Google Calendar sync</p>
+                  <p className="text-xs text-muted-foreground">
+                    Tarefas com data viram eventos no seu Google Calendar.
+                  </p>
+                </div>
+                {!connQuery.data ? (
+                  <p className="rounded-md bg-muted/50 px-2 py-1.5 text-xs text-muted-foreground">
+                    Você precisa conectar sua conta Google primeiro (botão na sidebar).
+                  </p>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Sincronizar este projeto</span>
+                    <Switch
+                      checked={project.google_calendar_sync_enabled}
+                      onCheckedChange={(v) => syncMutation.mutate(v)}
+                      disabled={syncMutation.isPending}
+                    />
+                  </div>
+                )}
+              </PopoverContent>
+            </Popover>
+          )}
           {isOwner && (
             <Button
               size="sm"
