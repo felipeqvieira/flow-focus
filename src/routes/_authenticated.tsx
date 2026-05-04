@@ -59,13 +59,16 @@ function AuthenticatedLayout() {
           <div className="h-7 w-7 rounded-md bg-gradient-to-br from-primary to-primary/40" />
           <span className="text-sm font-semibold tracking-tight">Flux</span>
         </div>
-        <button
-          onClick={() => setSidebarOpen(false)}
-          className="rounded-md p-1 text-muted-foreground hover:bg-sidebar-accent md:hidden"
-          aria-label="Fechar menu"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          <NotificationsBell />
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="rounded-md p-1 text-muted-foreground hover:bg-sidebar-accent md:hidden"
+            aria-label="Fechar menu"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       <nav className="flex flex-col gap-0.5">
