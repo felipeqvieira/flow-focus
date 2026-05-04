@@ -134,13 +134,10 @@ function AuthenticatedLayout() {
             <GoogleCalendarButton userId={user.id} />
           </div>
         )}
-        <div className="flex items-center gap-1 px-1">
-          <NotificationsBell />
-          <button className="flex flex-1 items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent">
-            <Settings className="h-4 w-4" />
-            Configurações
-          </button>
-        </div>
+        <button className="flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent">
+          <Settings className="h-4 w-4" />
+          Configurações
+        </button>
         <div className="mt-2 flex items-center gap-2 rounded-md px-2 py-2">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-medium text-primary">
             {initial}
