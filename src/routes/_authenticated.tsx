@@ -59,13 +59,16 @@ function AuthenticatedLayout() {
           <div className="h-7 w-7 rounded-md bg-gradient-to-br from-primary to-primary/40" />
           <span className="text-sm font-semibold tracking-tight">Flux</span>
         </div>
-        <button
-          onClick={() => setSidebarOpen(false)}
-          className="rounded-md p-1 text-muted-foreground hover:bg-sidebar-accent md:hidden"
-          aria-label="Fechar menu"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          <NotificationsBell />
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="rounded-md p-1 text-muted-foreground hover:bg-sidebar-accent md:hidden"
+            aria-label="Fechar menu"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       <nav className="flex flex-col gap-0.5">
@@ -131,13 +134,10 @@ function AuthenticatedLayout() {
             <GoogleCalendarButton userId={user.id} />
           </div>
         )}
-        <div className="flex items-center gap-1 px-1">
-          <NotificationsBell />
-          <button className="flex flex-1 items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent">
-            <Settings className="h-4 w-4" />
-            Configurações
-          </button>
-        </div>
+        <button className="flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent">
+          <Settings className="h-4 w-4" />
+          Configurações
+        </button>
         <div className="mt-2 flex items-center gap-2 rounded-md px-2 py-2">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-medium text-primary">
             {initial}
