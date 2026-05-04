@@ -44,10 +44,14 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       { title: "Flux — Tarefas que fluem" },
       { name: "description", content: "Gerenciador de tarefas pessoal e colaborativo com IA." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Flux" },
+      { property: "og:title", content: "Flux — Tarefas que fluem" },
       { property: "og:description", content: "Gerenciador de tarefas pessoal e colaborativo com IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Flux — Tarefas que fluem" },
+      { name: "twitter:description", content: "Gerenciador de tarefas pessoal e colaborativo com IA." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5ec88db2-f1bf-4954-adb2-2861ea522aae/id-preview-056ef1ed--735c48b4-818f-450a-862d-a2ee65b76042.lovable.app-1777895117116.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5ec88db2-f1bf-4954-adb2-2861ea522aae/id-preview-056ef1ed--735c48b4-818f-450a-862d-a2ee65b76042.lovable.app-1777895117116.png" },
     ],
     links: [
       {
