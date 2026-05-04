@@ -107,14 +107,14 @@ export function GoogleCalendarButton({ userId }: Props) {
         size="sm"
         onClick={handleConnect}
         disabled={starting}
-        className="gap-2"
+        className="w-full justify-start gap-2"
       >
         {starting ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" />
         ) : (
           <Calendar className="h-3.5 w-3.5" />
         )}
-        <span className="hidden sm:inline">Conectar Google Calendar</span>
+        <span className="truncate">Conectar Google Calendar</span>
       </Button>
     );
   }

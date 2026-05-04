@@ -126,9 +126,13 @@ function AuthenticatedLayout() {
       </div>
 
       <div className="mt-auto space-y-1 border-t border-sidebar-border pt-3">
+        {user && (
+          <div className="px-1">
+            <GoogleCalendarButton userId={user.id} />
+          </div>
+        )}
         <div className="flex items-center gap-1 px-1">
           <NotificationsBell />
-          {user && <GoogleCalendarButton userId={user.id} />}
           <button className="flex flex-1 items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent">
             <Settings className="h-4 w-4" />
             Configurações
