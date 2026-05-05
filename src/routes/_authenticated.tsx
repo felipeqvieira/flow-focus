@@ -9,6 +9,7 @@ import { projectsQueryOptions } from "@/lib/projects";
 import { NewProjectDialog } from "@/components/projects/NewProjectDialog";
 import { NotificationsBell } from "@/components/notifications/NotificationsBell";
 
+
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ location }) => {
     const { data: { session } } = await supabase.auth.getSession();
