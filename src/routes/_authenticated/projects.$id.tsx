@@ -152,6 +152,18 @@ function ProjectPage() {
               <span className="hidden sm:inline">Convidar</span>
             </Button>
           )}
+          {isOwner && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setDeleteOpen(true)}
+              className="gap-2 text-destructive hover:text-destructive"
+              title="Remover projeto"
+            >
+              <Trash2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Excluir</span>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -178,6 +190,28 @@ function ProjectPage() {
           invitedBy={user.id}
         />
       )}
+
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir projeto?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação é permanente. Todas as tarefas, checklists e convites
+              deste projeto serão removidos.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteMutation.mutate()}
+              disabled={deleteMutation.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
