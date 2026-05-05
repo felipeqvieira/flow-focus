@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { projectsQueryOptions } from "@/lib/projects";
 import { NewProjectDialog } from "@/components/projects/NewProjectDialog";
 import { NotificationsBell } from "@/components/notifications/NotificationsBell";
-import { GoogleCalendarButton } from "@/components/google/GoogleCalendarButton";
+
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ location }) => {
@@ -129,15 +129,17 @@ function AuthenticatedLayout() {
       </div>
 
       <div className="mt-auto space-y-1 border-t border-sidebar-border pt-3">
-        {user && (
-          <div className="px-1">
-            <GoogleCalendarButton userId={user.id} />
-          </div>
-        )}
-        <button className="flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent">
+        <Link
+          to="/settings"
+          onClick={() => setSidebarOpen(false)}
+          activeProps={{
+            className: "bg-sidebar-accent text-sidebar-accent-foreground",
+          }}
+          className="flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent"
+        >
           <Settings className="h-4 w-4" />
           Configurações
-        </button>
+        </Link>
         <div className="mt-2 flex items-center gap-2 rounded-md px-2 py-2">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-medium text-primary">
             {initial}

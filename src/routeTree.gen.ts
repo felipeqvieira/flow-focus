@@ -15,6 +15,7 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InviteTokenRouteImport } from './routes/invite.$token'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedEverythingRouteImport } from './routes/_authenticated/everything'
 import { Route as AuthenticatedDeskRouteImport } from './routes/_authenticated/desk'
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
@@ -51,6 +52,11 @@ const InviteTokenRoute = InviteTokenRouteImport.update({
   id: '/invite/$token',
   path: '/invite/$token',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedEverythingRoute = AuthenticatedEverythingRouteImport.update({
   id: '/everything',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/chat': typeof AuthenticatedChatRoute
   '/desk': typeof AuthenticatedDeskRoute
   '/everything': typeof AuthenticatedEverythingRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/invite/$token': typeof InviteTokenRoute
   '/projects/$id': typeof AuthenticatedProjectsIdRoute
   '/api/oauth/google/callback': typeof ApiOauthGoogleCallbackRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/chat': typeof AuthenticatedChatRoute
   '/desk': typeof AuthenticatedDeskRoute
   '/everything': typeof AuthenticatedEverythingRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/invite/$token': typeof InviteTokenRoute
   '/projects/$id': typeof AuthenticatedProjectsIdRoute
   '/api/oauth/google/callback': typeof ApiOauthGoogleCallbackRoute
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/_authenticated/chat': typeof AuthenticatedChatRoute
   '/_authenticated/desk': typeof AuthenticatedDeskRoute
   '/_authenticated/everything': typeof AuthenticatedEverythingRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/invite/$token': typeof InviteTokenRoute
   '/_authenticated/projects/$id': typeof AuthenticatedProjectsIdRoute
   '/api/oauth/google/callback': typeof ApiOauthGoogleCallbackRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/desk'
     | '/everything'
+    | '/settings'
     | '/invite/$token'
     | '/projects/$id'
     | '/api/oauth/google/callback'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/desk'
     | '/everything'
+    | '/settings'
     | '/invite/$token'
     | '/projects/$id'
     | '/api/oauth/google/callback'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/_authenticated/chat'
     | '/_authenticated/desk'
     | '/_authenticated/everything'
+    | '/_authenticated/settings'
     | '/invite/$token'
     | '/_authenticated/projects/$id'
     | '/api/oauth/google/callback'
@@ -235,6 +247,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InviteTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/everything': {
       id: '/_authenticated/everything'
       path: '/everything'
@@ -291,6 +310,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedChatRoute: typeof AuthenticatedChatRoute
   AuthenticatedDeskRoute: typeof AuthenticatedDeskRoute
   AuthenticatedEverythingRoute: typeof AuthenticatedEverythingRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedProjectsIdRoute: typeof AuthenticatedProjectsIdRoute
 }
 
@@ -298,6 +318,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedChatRoute: AuthenticatedChatRoute,
   AuthenticatedDeskRoute: AuthenticatedDeskRoute,
   AuthenticatedEverythingRoute: AuthenticatedEverythingRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedProjectsIdRoute: AuthenticatedProjectsIdRoute,
 }
 
@@ -319,12 +340,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

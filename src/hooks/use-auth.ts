@@ -50,7 +50,7 @@ export function useAuth() {
 
   const signInWithGoogle = useCallback(async () => {
     return lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/desk`,
+      redirect_uri: window.location.origin,
     });
   }, []);
 
