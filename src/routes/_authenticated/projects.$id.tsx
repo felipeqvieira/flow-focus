@@ -1,12 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { projectQueryOptions, updateProjectSync } from "@/lib/projects";
+import { deleteProject, projectQueryOptions, updateProjectSync } from "@/lib/projects";
 import { projectTasksQueryOptions } from "@/lib/tasks";
 import { KanbanBoard } from "@/components/kanban/KanbanBoard";
 import { useAuth } from "@/hooks/use-auth";
-import { ArrowLeft, Calendar, UserPlus } from "lucide-react";
+import { ArrowLeft, Calendar, Trash2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -14,6 +14,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { InviteMembersDialog } from "@/components/projects/InviteMembersDialog";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -40,7 +50,9 @@ function ProjectPage() {
   const qc = useQueryClient();
   const projectQuery = useQuery(projectQueryOptions(id));
   const tasksQuery = useQuery(projectTasksQueryOptions(id));
+  const navigate = useNavigate();
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const project = projectQuery.data;
   const isOwner = !!user && !!project && project.owner_id === user.id;
@@ -59,6 +71,16 @@ function ProjectPage() {
       toast.success(enabled ? "Sincronização ativada" : "Sincronização desativada");
     },
     onError: () => toast.error("Erro ao atualizar sincronização"),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteProject(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      toast.success("Projeto removido");
+      navigate({ to: "/everything" });
+    },
+    onError: () => toast.error("Erro ao remover projeto"),
   });
 
   return (
@@ -104,7 +126,7 @@ function ProjectPage() {
                 </div>
                 {!connQuery.data ? (
                   <p className="rounded-md bg-muted/50 px-2 py-1.5 text-xs text-muted-foreground">
-                    Você precisa conectar sua conta Google primeiro (botão na sidebar).
+                    Conecte sua conta Google em <Link to="/settings" className="underline">Configurações</Link> para ativar.
                   </p>
                 ) : (
                   <div className="flex items-center justify-between">
