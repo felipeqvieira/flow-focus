@@ -5,10 +5,17 @@ export const Route = createFileRoute("/api/public/hooks/notifications")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        // Auth header is anon key from pg_cron — used to instantiate client
-        const authHeader = request.headers.get("apikey");
-        if (!authHeader) {
-          return new Response(JSON.stringify({ error: "missing apikey" }), {
+        // Require shared-secret header to authenticate the cron caller
+        const provided = request.headers.get("x-webhook-secret");
+        const expected = process.env.NOTIFICATIONS_WEBHOOK_SECRET;
+        if (!expected) {
+          return new Response(
+            JSON.stringify({ error: "server misconfigured" }),
+            { status: 500, headers: { "Content-Type": "application/json" } },
+          );
+        }
+        if (!provided || provided !== expected) {
+          return new Response(JSON.stringify({ error: "unauthorized" }), {
             status: 401,
             headers: { "Content-Type": "application/json" },
           });

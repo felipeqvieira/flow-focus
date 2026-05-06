@@ -6,9 +6,26 @@ import {
   verifyState,
 } from "@/server/googleOAuth.server";
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function safeRedirectPath(to: string): string {
+  // Only allow same-origin paths
+  if (typeof to !== "string") return "/";
+  if (!to.startsWith("/") || to.startsWith("//")) return "/";
+  return to;
+}
+
 function htmlRedirect(to: string, message: string): Response {
-  const safeTo = to.replace(/"/g, "");
-  const html = `<!doctype html><html><head><meta charset="utf-8"><title>${message}</title></head><body style="font-family:system-ui;padding:24px;background:#0b0b0c;color:#eee"><p>${message}</p><script>setTimeout(function(){location.replace(${JSON.stringify(safeTo)})},800)</script></body></html>`;
+  const safeTo = safeRedirectPath(to);
+  const safeMessage = escapeHtml(message);
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>${safeMessage}</title></head><body style="font-family:system-ui;padding:24px;background:#0b0b0c;color:#eee"><p>${safeMessage}</p><script>setTimeout(function(){location.replace(${JSON.stringify(safeTo)})},800)</script></body></html>`;
   return new Response(html, {
     status: 200,
     headers: { "Content-Type": "text/html; charset=utf-8" },
