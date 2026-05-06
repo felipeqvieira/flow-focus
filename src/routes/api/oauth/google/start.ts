@@ -7,7 +7,12 @@ export const Route = createFileRoute("/api/oauth/google/start")({
     handlers: {
       GET: async ({ request }) => {
         const url = new URL(request.url);
-        const redirectTo = url.searchParams.get("redirect") || "/";
+        const rawRedirect = url.searchParams.get("redirect") || "/";
+        // Restrict to same-origin paths to prevent open redirects
+        const redirectTo =
+          rawRedirect.startsWith("/") && !rawRedirect.startsWith("//")
+            ? rawRedirect
+            : "/";
 
         // Authenticate via Bearer token sent by the client
         const auth = request.headers.get("authorization") ?? "";
