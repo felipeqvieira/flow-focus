@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { getSafeRedirectPath } from "@/lib/authRedirect";
@@ -20,7 +20,6 @@ export const Route = createFileRoute("/login")({
 type Mode = "signin" | "signup";
 
 function LoginPage() {
-  const navigate = useNavigate();
   const search = Route.useSearch();
   const redirect = getSafeRedirectPath(search.redirect);
   const { signInWithPassword, signUpWithPassword, signInWithGoogle } = useAuth();
