@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import { getSafeRedirectUri } from "@/lib/authRedirect";
 
 export type AuthState = {
   user: User | null;
@@ -48,9 +49,9 @@ export function useAuth() {
     [],
   );
 
-  const signInWithGoogle = useCallback(async () => {
+  const signInWithGoogle = useCallback(async (redirect?: string) => {
     return lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: getSafeRedirectUri(redirect),
     });
   }, []);
 

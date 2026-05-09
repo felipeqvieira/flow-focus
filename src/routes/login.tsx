@@ -1,6 +1,7 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { getSafeRedirectPath } from "@/lib/authRedirect";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
@@ -8,10 +9,7 @@ export const Route = createFileRoute("/login")({
     redirect: typeof search.redirect === "string" ? search.redirect : undefined,
   }),
   head: () => ({
-    meta: [
-      { title: "Entrar — Flux" },
-      { name: "description", content: "Acesse sua conta Flux." },
-    ],
+    meta: [{ title: "Entrar — Flux" }, { name: "description", content: "Acesse sua conta Flux." }],
   }),
   component: LoginPage,
 });
@@ -19,9 +17,8 @@ export const Route = createFileRoute("/login")({
 type Mode = "signin" | "signup";
 
 function LoginPage() {
-  const navigate = useNavigate();
   const search = Route.useSearch();
-  const redirect = search.redirect ?? "/desk";
+  const redirect = getSafeRedirectPath(search.redirect);
   const { signInWithPassword, signUpWithPassword, signInWithGoogle } = useAuth();
 
   const [mode, setMode] = useState<Mode>("signin");
@@ -47,7 +44,7 @@ function LoginPage() {
           }
           return;
         }
-        navigate({ to: redirect });
+        window.location.assign(redirect);
       } else {
         if (!name.trim()) {
           toast.error("Informe seu nome.");
@@ -72,12 +69,12 @@ function LoginPage() {
   const handleGoogle = async () => {
     setLoading(true);
     try {
-      const result = await signInWithGoogle();
+      const result = await signInWithGoogle(redirect);
       if (result.error) {
         toast.error("Não foi possível entrar com Google.");
         return;
       }
-      if (!result.redirected) navigate({ to: redirect });
+      if (!result.redirected) window.location.assign(redirect);
     } finally {
       setLoading(false);
     }
@@ -92,8 +89,8 @@ function LoginPage() {
           </div>
           <h1 className="text-xl font-semibold">Verifique seu email</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Enviamos um link de confirmação para <strong>{email}</strong>.
-            Clique nele para ativar sua conta.
+            Enviamos um link de confirmação para <strong>{email}</strong>. Clique nele para ativar
+            sua conta.
           </p>
           <button
             onClick={() => {
@@ -230,9 +227,7 @@ function Field({
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange">) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-medium text-muted-foreground">
-        {label}
-      </span>
+      <span className="mb-1.5 block text-xs font-medium text-muted-foreground">{label}</span>
       <input
         {...rest}
         value={value}

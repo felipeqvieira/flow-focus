@@ -35,9 +35,6 @@ function Landing() {
       </header>
 
       <main className="mx-auto flex max-w-3xl flex-col items-center px-6 pb-20 pt-16 text-center md:pt-28">
-        <span className="mb-6 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
-          Em construção · Fase 1 concluída
-        </span>
         <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight md:text-6xl">
           Suas tarefas, projetos e ideias —{" "}
           <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
@@ -46,8 +43,8 @@ function Landing() {
           .
         </h1>
         <p className="mt-5 max-w-xl text-balance text-sm text-muted-foreground md:text-base">
-          Um Kanban rápido com drag-and-drop, prazos e um chatbot que cria,
-          move e prioriza tarefas por comando.
+          Um Kanban rápido com drag-and-drop, prazos e um chatbot que cria, move e prioriza tarefas
+          por comando.
         </p>
 
         <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
