@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { getSafeRedirectPath } from "@/lib/authRedirect";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
@@ -21,7 +22,7 @@ type Mode = "signin" | "signup";
 function LoginPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const redirect = search.redirect ?? "/desk";
+  const redirect = getSafeRedirectPath(search.redirect);
   const { signInWithPassword, signUpWithPassword, signInWithGoogle } = useAuth();
 
   const [mode, setMode] = useState<Mode>("signin");
@@ -47,7 +48,7 @@ function LoginPage() {
           }
           return;
         }
-        navigate({ to: redirect });
+        window.location.assign(redirect);
       } else {
         if (!name.trim()) {
           toast.error("Informe seu nome.");
@@ -72,12 +73,12 @@ function LoginPage() {
   const handleGoogle = async () => {
     setLoading(true);
     try {
-      const result = await signInWithGoogle();
+      const result = await signInWithGoogle(redirect);
       if (result.error) {
         toast.error("Não foi possível entrar com Google.");
         return;
       }
-      if (!result.redirected) navigate({ to: redirect });
+      if (!result.redirected) window.location.assign(redirect);
     } finally {
       setLoading(false);
     }
