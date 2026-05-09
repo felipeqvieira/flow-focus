@@ -43,8 +43,8 @@ function Landing() {
           .
         </h1>
         <p className="mt-5 max-w-xl text-balance text-sm text-muted-foreground md:text-base">
-          Um Kanban rápido com drag-and-drop, prazos e um chatbot que cria,
-          move e prioriza tarefas por comando.
+          Um Kanban rápido com drag-and-drop, prazos e um chatbot que cria, move e prioriza tarefas
+          por comando.
         </p>
 
         <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row">

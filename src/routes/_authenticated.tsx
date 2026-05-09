@@ -9,7 +9,6 @@ import { projectsQueryOptions } from "@/lib/projects";
 import { NewProjectDialog } from "@/components/projects/NewProjectDialog";
 import { NotificationsBell } from "@/components/notifications/NotificationsBell";
 
-
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ location }) => {
     if (typeof window === "undefined") return;
@@ -48,11 +47,8 @@ function AuthenticatedLayout() {
     navigate({ to: "/login" });
   };
 
-  const initial = (user?.user_metadata?.display_name || user?.email || "?")
-    .charAt(0)
-    .toUpperCase();
-  const displayName =
-    user?.user_metadata?.display_name || user?.email?.split("@")[0] || "Usuário";
+  const initial = (user?.user_metadata?.display_name || user?.email || "?").charAt(0).toUpperCase();
+  const displayName = user?.user_metadata?.display_name || user?.email?.split("@")[0] || "Usuário";
 
   const sidebar = (
     <>
@@ -105,9 +101,7 @@ function AuthenticatedLayout() {
         </div>
         <div className="flex flex-col gap-0.5">
           {projectsQuery.data?.length === 0 && (
-            <div className="px-2 py-1.5 text-xs text-muted-foreground">
-              Nenhum projeto ainda.
-            </div>
+            <div className="px-2 py-1.5 text-xs text-muted-foreground">Nenhum projeto ainda.</div>
           )}
           {projectsQuery.data?.map((p) => (
             <Link
@@ -148,9 +142,7 @@ function AuthenticatedLayout() {
           </div>
           <div className="min-w-0 flex-1">
             <div className="truncate text-xs font-medium">{displayName}</div>
-            <div className="truncate text-[11px] text-muted-foreground">
-              {user?.email}
-            </div>
+            <div className="truncate text-[11px] text-muted-foreground">{user?.email}</div>
           </div>
           <button
             onClick={handleLogout}

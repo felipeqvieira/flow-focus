@@ -9,10 +9,7 @@ export const Route = createFileRoute("/login")({
     redirect: typeof search.redirect === "string" ? search.redirect : undefined,
   }),
   head: () => ({
-    meta: [
-      { title: "Entrar — Flux" },
-      { name: "description", content: "Acesse sua conta Flux." },
-    ],
+    meta: [{ title: "Entrar — Flux" }, { name: "description", content: "Acesse sua conta Flux." }],
   }),
   component: LoginPage,
 });
@@ -92,8 +89,8 @@ function LoginPage() {
           </div>
           <h1 className="text-xl font-semibold">Verifique seu email</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Enviamos um link de confirmação para <strong>{email}</strong>.
-            Clique nele para ativar sua conta.
+            Enviamos um link de confirmação para <strong>{email}</strong>. Clique nele para ativar
+            sua conta.
           </p>
           <button
             onClick={() => {
@@ -230,9 +227,7 @@ function Field({
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange">) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-medium text-muted-foreground">
-        {label}
-      </span>
+      <span className="mb-1.5 block text-xs font-medium text-muted-foreground">{label}</span>
       <input
         {...rest}
         value={value}
