@@ -94,6 +94,13 @@ export async function syncTaskToGoogle(opts: {
     .maybeSingle();
   if (taskErr || !task) return { ok: false, reason: "task_not_found" };
 
+  // Authorization: ensure caller has access to this task's project (prevents IDOR)
+  const { data: hasAccess, error: accessErr } = await supabaseAdmin.rpc(
+    "user_has_project_access",
+    { _user_id: userId, _project_id: task.project_id },
+  );
+  if (accessErr || !hasAccess) return { ok: false, reason: "forbidden" };
+
   const { data: project } = await supabaseAdmin
     .from("projects")
     .select("id, google_calendar_sync_enabled")
